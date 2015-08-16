@@ -12,7 +12,7 @@ DESCRIPTION
 
 The purpose of this application is to demonstrate how to fetch the data from server and parse it using JSON Parse into appropriate models. This application provides user interface to play Guessing game.
 
-This application is implemented in Swif language using Storyboard with AutoLayout and Size class.
+This application is implemented in Swift language using Storyboard with AutoLayout and Size class.
 
 Following iOS and Swift Language features have been used to develope this app.
 
@@ -22,6 +22,7 @@ Following iOS and Swift Language features have been used to develope this app.
 4. Singleton
 5. Closurs    (Block)
 6. Enum
+7. KVO
 
 
 Added Objective-C code also to demonstrate that how to integrate Objective C code into Swift based project

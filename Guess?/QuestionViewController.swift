@@ -43,11 +43,12 @@ class QuestionViewController: UIViewController, ResponseViewControllerDelegate {
     @IBOutlet weak var secondOptionLabel: UILabel!
     @IBOutlet weak var thirdOptionLabel: UILabel!
     @IBOutlet weak var backgroundImageView: UIImageView!
-    @IBOutlet weak var categoryButton: UIButton!
+    @IBOutlet weak var sectionLabel: UILabel!
     
     var isTimerRunning = false
     var pointTimer: NSTimer?
     var currentQuesitonPoint: Int = 0
+    var givenAnswers = NSMutableSet()  // 'givenAnswers' is a set of choosen answers for a question.
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,14 +67,30 @@ class QuestionViewController: UIViewController, ResponseViewControllerDelegate {
         if isTimerRunning == false {
             return
         }
-        self.stopPointTimer()
+//        self.stopPointTimer()
         var optionButton: UIButton = (sender as? UIButton)!
-        let selQuestion = GameManager.sharedInstance.selectedQuestion()
         var choosedIndex = UInt8(optionButton.tag - baseTag)
-        selQuestion.userAnseredIndex = choosedIndex
+        
+        let selQuestion = GameManager.sharedInstance.selectedQuestion()
         selQuestion.userDidAttemp = true
-        selQuestion.answeredPoint = selQuestion.correctAnswerIndex == choosedIndex ? currentQuesitonPoint : -kPointDetectedOnWrongAnswer
-        self.performSegueWithIdentifier("ResponseViewIdentifier", sender: self)
+        
+        // If answer is correct, display response view
+        if  selQuestion.correctAnswerIndex == choosedIndex {
+            
+            selQuestion.userAnseredIndex = choosedIndex
+            selQuestion.answeredPoint = currentQuesitonPoint
+            self.performSegueWithIdentifier("ResponseViewIdentifier", sender: self)
+        }
+        else {
+            // If `choosedIndex` doesn't belong to `givenAnswers` set deduct 2 points from player's score.
+            if givenAnswers.containsObject(Int(choosedIndex)) == false {
+                
+                let player = GameManager.sharedInstance.player
+                player!.score += -kPointDetectedOnWrongAnswer
+                selQuestion.answeredPoint += -kPointDetectedOnWrongAnswer
+                givenAnswers.addObject(Int(choosedIndex)) // add `choosedIndex` to `givenAnswers` set
+            }
+        }
     }
     
     @IBAction func skipTheQuestion(sender: AnyObject) {
@@ -85,7 +102,11 @@ class QuestionViewController: UIViewController, ResponseViewControllerDelegate {
         self.stopPointTimer()
         var question = GameManager.sharedInstance.selectedQuestion()
         question.userGiveup = true
-        question.answeredPoint = 0
+        
+       if question.userDidAttemp == false {
+            question.answeredPoint = 0
+        }
+        
         self.performSegueWithIdentifier("ResponseViewIdentifier", sender: self)
     }
     
@@ -107,7 +128,7 @@ class QuestionViewController: UIViewController, ResponseViewControllerDelegate {
         
         pointLabel.text = ""
         self.stopPointTimer()
-                
+        givenAnswers.removeAllObjects()  // Remove all given answers for previous question.
         if question.image != nil {
         
             self.showOptionsForQuestion()
@@ -139,7 +160,7 @@ class QuestionViewController: UIViewController, ResponseViewControllerDelegate {
         currentQuesitonPoint = 10
         backgroundImageView.image = question.image
         guessImageView.image = question.image
-        categoryButton.setTitle(question.section, forState: UIControlState.Normal)
+        sectionLabel.text = question.section
         
         self.pointLabel.text = "+\(self.currentQuesitonPoint) Points coming your ways"
         

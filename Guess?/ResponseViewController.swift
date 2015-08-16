@@ -87,14 +87,14 @@ class ResponseViewController: UIViewController {
         var pointMessage: String?
         var pointValue: String!
         
-        if question.userDidAttemp == true {
+        if  question.userDidAttemp == true {
             
             if  question.correctAnswerIndex == question.userAnseredIndex {
                 pointValue = "+\(question.answeredPoint)"
                 pointMessage = "THAT'S RIGHT!\n\(pointValue) POINTS\n FOR YOU!"
             }
             else {
-                pointValue = "-\(kPointDetectedOnWrongAnswer)"
+                pointValue = "\(question.answeredPoint)"
                 pointMessage = "THAT'S WRONG!\n\(pointValue) POINTS\n FOR YOU!"
             }
         }
