@@ -23,6 +23,7 @@ Following iOS and Swift Language features have been used to develope this app.
 5. Closurs    (Block)
 6. Enum
 7. KVO
+8. New features coming soon..
 
 
 Added Objective-C code also to demonstrate that how to integrate Objective C code into Swift based project
